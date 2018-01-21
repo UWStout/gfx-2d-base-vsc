@@ -14,6 +14,10 @@ The basic steps for utilizing this repository:
 
 ## 1. Clone the repo and pick a Tag:
 
+*Note: As an alternative to cloning the repo, you can just grab the source code for a particular tag by visiting the [releases page](https://github.com/UWStout/gfx-2d-base-vsc/releases) on github.*
+
+---
+
 Navigate into your workspace directory and clone the repo with git:
 
 ```
@@ -23,16 +27,11 @@ git clone https://github.com/UWStout/gfx-2d-base-vsc.git .
 Switch to the tag that matches the project you want to work on:
 
 ```
+git pull --tags
 git checkout <tagname>
 ```
 
 See the [github website](https://github.com/UWStout/gfx-2d-base-vsc/tags) for lists of accepted tagnames.
-
----
-
-As an alternative to cloning the repo, you can just grab the source code for a particular tag by visiting the [releases page](https://github.com/UWStout/gfx-2d-base-vsc/releases) on github.
-
----
 
 ## 2. Install node.js and npm:
 
@@ -102,7 +101,7 @@ The prod script will still run the local dev server so you can test to make sure
 npm run deploy
 ```
 
-This is configured identicall to the prod script but it does not run the local browsersync server. It is a good idea to clear everything out of the 'dist' folder before you do this.
+This is configured identical to the prod script but it does not run the local browsersync server. It is a good idea to clear everything out of the 'dist' folder before you do this.
 
 ## Credits
 This code base was largely inspired by:
