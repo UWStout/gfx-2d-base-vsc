@@ -17,7 +17,7 @@ The basic steps for utilizing this repository:
 Navigate into your workspace directory and clone the repo with git:
 
 ```
-git clone https://github.com/lean/phaser-es6-webpack.git .
+git clone https://github.com/UWStout/gfx-2d-base-vsc.git .
 ```
 
 Switch to the tag that matches the project you want to work on:
@@ -26,7 +26,13 @@ Switch to the tag that matches the project you want to work on:
 git checkout <tagname>
 ```
 
-See the [github website](https://github.com/UWStout/gfx-2d-base/tags) for lists of accepted tagnames.
+See the [github website](https://github.com/UWStout/gfx-2d-base-vsc/tags) for lists of accepted tagnames.
+
+---
+
+As an alternative to cloning the repo, you can just grab the source code for a particular tag by visiting the [releases page](https://github.com/UWStout/gfx-2d-base-vsc/releases) on github.
+
+---
 
 ## 2. Install node.js and npm:
 
@@ -34,7 +40,7 @@ Download and run the LTS version available from https://nodejs.org/en/
 
 ## 3. Install dependencies:
 
-Navigate to the repo directory and run:
+Navigate to the repo directory (or use the VS Code terminal) and run:
 
 ```
 npm install
@@ -52,7 +58,7 @@ Note, yarn is also supported.
 # Working on the Code
 
 While working on the project, you should first run the development server.  Change to
-the code repo directory and run:
+the code repo directory (or use the VS Code terminal) and run:
 
 ```
 npm run dev
@@ -79,17 +85,24 @@ there are some changes that will cause the browser to get out of sync:
 * If you make changes to HTML or CSS code it will NOT automatically refresh, only JS code.
 * If the 'dev' server is not running (e.g. you forgot to run 'npm run dev') it will not refresh.
 
-## Build for deployment:
+## Build for production/deployment:
 
-When you project is done and you want to build the FINAL version you would give to normal users
-then change to the directory of the repo and run:
+When you project is done and you want to build the FINAL version you would give to normal users, you can build the production or deployment versions. First, to build the production version, adjust your 'run' command to be:
+
+```
+npm run prod
+```
+
+This builds the 'dist/bundle.js' file differently so that its size is minimized and the code is
+further optimized. It also sets the global JS variable `__DEV__` to be false.
+
+The prod script will still run the local dev server so you can test to make sure everything still works. Once you are sure, you can then run the deploy script:
 
 ```
 npm run deploy
 ```
 
-This builds the 'dist/bundle.js' file differently so that its size is minimized and the code is
-further optimized. This is not required for your class submissions but you should know it exists.
+This is configured identicall to the prod script but it does not run the local browsersync server. It is a good idea to clear everything out of the 'dist' folder before you do this.
 
 ## Credits
 This code base was largely inspired by:
