@@ -6,9 +6,9 @@
   "repository": "UWStout/gfx-2d-base-vsc",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --config webpack.dev.config.js",
-    "prod": "webpack --config webpack.prod.config.js",
-    "deploy": "webpack --config webpack.deploy.config.js",
+    "dev": "rm -f dist/*; webpack --config webpack.dev.config.js",
+    "prod": "rm -f dist/*; webpack --config webpack.prod.config.js",
+    "deploy": "rm -f dist/*; webpack --config webpack.deploy.config.js",
     "test": "eslint ./src/**/**.js"
   },
   "license": "MIT",

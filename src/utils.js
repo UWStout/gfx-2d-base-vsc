@@ -157,16 +157,14 @@ function addExtensionsToContext(gl) {
 
 /**
  * Creates a webgl context.
- * @param {HTMLCanvasElement} canvas The canvas tag to get
+ * @param {HTMLElement} canvas The canvas tag to get
  *     context from. If one is not passed in one will be
  *     created.
  * @return {WebGLRenderingContext} The created context.
  */
 function create3DContext(canvas, opt_attribs) {
   var names = ["webgl", "experimental-webgl"];
-  /** @type {WebGLRenderingContext} */
   var context = null;
-
   for (var ii = 0; ii < names.length; ++ii) {
     context = canvas.getContext(names[ii], opt_attribs);
     if (context) {

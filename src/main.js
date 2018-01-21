@@ -9,28 +9,26 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 // Import jQuery as the usual '$' variable
 import $ from 'jquery'
 
-// Import the Program and ArrayBuffer classes from the nano-gl library
+// Import the NanoGL & JavaScript stats libraries
 // @ts-ignore
-import ArrayBuffer from 'nanogl/arraybuffer'
-// @ts-ignore
-import Program from 'nanogl/program'
+import NanoGL from 'nanogl'
+import Stats from 'stats.js'
+
+// Import our own Shape and Interface objects
+import Shape from './objects/Shape'
+import Interface from './interface'
 
 // Import functions from matrix_math and utils
 import { orthoMatrix } from './matrix_math'
 import { getWebGLContext, resizeCanvasToDisplaySize } from './utils'
 
-// @ts-ignore
-import Stats from 'stats.js'
-
 // Global variables shared by many of the functions below
 // NOTE: These are only accessible in this one file!!
 let gl = null // WebGL rendering context
 let shader = null // Compiled shader program
+let scene = null // Array of shapes in the scene
 let projM = null // The projection matrix (2d, orthographic)
-
-let square = {} // A square shape
-let triangle = {} // A triangle shape
-let stats = null // FPS monitoring
+let stats = null // Stats.js object for fps display
 
 /**
  * Function to run when page is fully loaded
@@ -45,15 +43,17 @@ $(document).ready(() => {
   // Respond when our webgl context gets restored
   canvas.addEventListener('webglcontextrestored', initializeWebGL, false)
 
-  // Optionally setup FPS counter
+  // Optionally setup stats.js
   if (__DEV__) {
     stats = new Stats()
-    stats.showPanel(0)
-    document.body.appendChild(stats.dom)
   }
 
   // Setup initial webgl context
   initializeWebGL()
+
+  // Setup the GUI event system (must be called once when the document is ready)
+  // Note: Imported from interface.js
+  Interface.initialize()
 })
 
 /**
@@ -72,49 +72,19 @@ function initializeWebGL () {
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
 
   // Create a new shader program and compile and bind our shaders
-  shader = new Program(gl, $('#vs').text(), $('#fs').text())
+  shader = new NanoGL.Program(gl, $('#vs').text(), $('#fs').text())
   shader.bind()
 
-  // Build the shapes
-  buildShapes()
+  // Allocate/Clear the scene array object
+  scene = []
+
+  // Pass references to the rendering context and scene into
+  // the Interface object (it will need them later)
+  Interface.gl = gl
+  Interface.scene = scene
 
   // Start / Restart the rendering loop
   requestAnimationFrame(checkRender)
-}
-
-/**
- * Build the simple shapes for this scene
- */
-function buildShapes () {
-  // Make the raw data for the triangle
-  triangle._data = new Float32Array([
-    -1.5, 1.0, 0.0, // Vertex A
-    1.0, 0.0, 0.0, // Color A
-
-    -2.5, -1.0, 0.0, // Vertex B
-    0.0, 1.0, 0.0, // Color B
-
-    -0.5, -1.0, 0.0, // Vertex C
-    0.0, 0.0, 1.0 // Color C
-  ])
-
-  // Make the WebGL ArayBuffer for the triangle (using nanoGL)
-  triangle.buffer = new ArrayBuffer(gl, triangle._data, gl.STATIC_DRAW)
-  triangle.buffer.attrib('aPosition', 3, gl.FLOAT)
-  triangle.buffer.attrib('aColor', 3, gl.FLOAT)
-
-  // Four vertices with position and color all on one line
-  square._data = new Float32Array([
-    2.5, 1.0, 0.0, 0.5, 0.5, 1.0,
-    0.5, 1.0, 0.0, 0.5, 0.5, 1.0,
-    2.5, -1.0, 0.0, 0.5, 0.5, 1.0,
-    0.5, -1.0, 0.0, 0.5, 0.5, 1.0
-  ])
-
-  // Make the WebGL ArayBuffer for the square (using nanoGL)
-  square.buffer = new ArrayBuffer(gl, square._data, gl.STATIC_DRAW)
-  square.buffer.attrib('aPosition', 3, gl.FLOAT)
-  square.buffer.attrib('aColor', 3, gl.FLOAT)
 }
 
 /**
@@ -134,8 +104,7 @@ function resizeCanvas () {
     }
 
     // Update the projeciton matrix to account for the new canvas dimensions
-    let ratio = gl.canvas.height / gl.canvas.width
-    projM = orthoMatrix(-3 * ratio, 3 * ratio, -3, 3)
+    projM = orthoMatrix(0, gl.canvas.height - 1, 0, gl.canvas.width - 1)
 
     // Indicate that the viewport & canvas were resized
     return true
@@ -153,9 +122,10 @@ function resizeCanvas () {
 function checkRender (time) {
   if (stats) { stats.begin() }
 
-  // Does canvas need a resize?
-  if (resizeCanvas()) {
-    // If so, redraw the scene
+  // Does canvas need a resize? or is an updated needed?
+  if (resizeCanvas() || Interface.updateRequested) {
+    // If so reset the update request and render the scene
+    Interface.updateRequested = false
     renderScene(time)
   }
 
@@ -166,7 +136,7 @@ function checkRender (time) {
 }
 
 /**
- * Draw all the shapes in the scene
+ * Draw all the shapes in the scene array
  */
 function renderScene (time) {
   // Clear the screen to black (colors only)
@@ -175,21 +145,42 @@ function renderScene (time) {
   // Use the pre-compiled shader
   shader.use()
 
-  renderShapes()
+  // Call renderShape for each shape
+  scene.forEach(renderShape)
 }
 
 /**
- * Draw the two shapes using WebGL
+ * Draw a single shape using WebGL
  */
-function renderShapes () {
+function renderShape (shape, index) {
   // Pass this shape's properties into the shader
+  shape.color.passToShader(shader)
   shader.uProjection(projM)
 
-  // Bind the position and color attributes for the triangle, then draw
-  triangle.buffer.attribPointer(shader)
-  triangle.buffer.drawTriangles()
+  // Bind the position attribute to this shape's vertex buffer
+  shape.buffer.attribPointer(shader)
 
-  // Bind the position and color attributes for the square, then draw
-  square.buffer.attribPointer(shader)
-  square.buffer.drawTriangleStrip()
+  // Draw the shape (or rather, its vertex buffer)
+  if (!shape.filled && shape.type !== Shape.SHAPE_TYPE.LINE) {
+    // Shape outlines (except lines) are always drawn as a 'line loop'
+    shape.buffer.drawLineLoop()
+  } else {
+    // Draw filled shapes
+    switch (shape.type) {
+      // Filled circles are drawn as 'triangle fans'
+      case Shape.SHAPE_TYPE.CIRCLE:
+        shape.buffer.drawTriangleFan()
+        break
+
+      // Lines are alwasy drawn as 'lines' (duh)
+      case Shape.SHAPE_TYPE.LINE:
+        shape.buffer.drawLines()
+        break
+
+      // Filled triangles are drawn as 'triangles' (also duh)
+      case Shape.SHAPE_TYPE.TRIANGLE:
+        shape.buffer.drawTriangles()
+        break
+    }
+  }
 }
