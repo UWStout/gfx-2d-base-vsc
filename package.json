@@ -1,9 +1,9 @@
 {
   "name": "cs343-2d-webgl-base",
   "version": "1.0.0",
-  "description": "The code base used for projects in CS 343 - Computer Graphics",
+  "description": "The code base used for 2d projects in CS 343 - Computer Graphics",
   "author": "Seth Berrier <berriers@uwstout.edu>",
-  "repository": "UWStout/gfx-2d-base",
+  "repository": "UWStout/gfx-2d-base-vsc",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --config webpack.dev.config.js",
