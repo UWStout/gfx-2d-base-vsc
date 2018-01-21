@@ -31,11 +31,11 @@ git pull --tags
 git checkout <tagname>
 ```
 
-See the [github website](https://github.com/UWStout/gfx-2d-base-vsc/tags) for lists of accepted tagnames.
+See the [github website](https://github.com/UWStout/gfx-2d-base-vsc/tags) for a list of accepted tag names.
 
 ## 2. Install node.js and npm:
 
-Download and run the LTS version available from https://nodejs.org/en/
+Download and install the LTS version of node.js with npm available from https://nodejs.org/en/
 
 ## 3. Install dependencies:
 
@@ -68,7 +68,7 @@ also run a local web server on port 3000. Lastly, it opens 'localhost:3000' in y
 default web browser.
 
 You can open and edit the files in the project base in your favorite text/code editor
-(Atom is recommended) and the changes will be automatically reflected in the browser.
+(VisualStudio Code is recommended) and the changes will be automatically reflected in the browser.
 If you accidentally close the browser or if you want to open it in a different browser
 or have multiple versions open at once, just type 'localhost:3000' into the browser
 address bar to talk to the local server.
