@@ -46,6 +46,8 @@ $(document).ready(() => {
   // Optionally setup stats.js
   if (__DEV__) {
     stats = new Stats()
+    stats.showPanel(0)
+    document.body.appendChild(stats.dom)
   }
 
   // Setup initial webgl context
