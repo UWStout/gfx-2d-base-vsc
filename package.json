@@ -11,8 +11,8 @@
     "deploy": "run-s clean deploy-cmd",
     "clean": "del-cli -f dist/*",
     "dev-cmd": "webpack --config webpack.dev.config.js",
-    "prod-cmd": "webpack --config webpack.dev.config.js",
-    "deploy-cmd": "webpack --config webpack.dev.config.js",
+    "prod-cmd": "webpack --config webpack.prod.config.js",
+    "deploy-cmd": "webpack --config webpack.deploy.config.js",
     "test": "eslint ./src/**/**.js"
   },
   "license": "MIT",
