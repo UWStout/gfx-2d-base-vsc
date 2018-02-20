@@ -48,6 +48,10 @@ let Interface = {
     $('.shape-trans-control').on('input', updateShapeTransformation)
     $('#pivotCentroid').change(updateShapeTransformation)
 
+    // Event handler to show mouse coordinates as you move
+    $('#rasterizerCanvas').mousemove(showCoordinates)
+    $('#glCanvas').mousemove(showCoordinates)
+
     /* Add all the appropriate options to the predefined colors select box */
 
     // The initial text let's the user know what this
@@ -86,6 +90,8 @@ let Interface = {
   scene: null,
   gl: null,
 
+  lastClickPos: Point.ORIGIN,
+
   glUpdateRequested: false,
   rastUpdateRequested: false,
 
@@ -112,6 +118,23 @@ function updateData () {
   $('#saveImage').attr('href', dataURL)
 }
 
+/**
+ * Show the current mouse coordiantes in the web page
+ * @param {JQueryMouseEventObject} e Mouse motion event
+ */
+function showCoordinates (e) {
+  let rect
+  if (Interface.rasterizerMode) {
+    rect = $('#rasterizerCanvas')[0].getBoundingClientRect()
+  } else {
+    rect = $('#glCanvas')[0].getBoundingClientRect()
+  }
+  let curMousePos = new Point(e.clientX - rect.left,
+    rect.height - (e.clientY - rect.top))
+
+  $('#curMouse').text(`(${curMousePos.x}, ${curMousePos.y})`)
+}
+
 // Global array to store locations of previous clicks.  Needs to be
 // global so that its state persists between function calls.
 let clickList = []
@@ -132,16 +155,17 @@ function onClickCanvas (e) {
   } else {
     rect = $('#glCanvas')[0].getBoundingClientRect()
   }
-  let lastClickPos = new Point(e.clientX - rect.left,
+  Interface.lastClickPos = new Point(e.clientX - rect.left,
     rect.height - (e.clientY - rect.top))
 
   if (__DEV__) {
     // Print to the javascript console for debugging/verificaiton
-    console.info('click at (' + lastClickPos.x + ',' + lastClickPos.y + ')')
+    console.info(`click at (${Interface.lastClickPos.x}, ${Interface.lastClickPos.y})`)
   }
+  $('#lastClick').text(`(${Interface.lastClickPos.x}, ${Interface.lastClickPos.y})`)
 
   // Add the point to the list
-  clickList.push(lastClickPos)
+  clickList.push(Interface.lastClickPos)
 
   // Check if we have enough points to make the current shape
   let shapeAdded = false
