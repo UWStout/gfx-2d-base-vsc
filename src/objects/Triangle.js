@@ -1,6 +1,10 @@
 // Import the Shape and Point objects
 import Shape from './Shape'
 import Point from './Point'
+import Color from './Color'
+
+// Import the setPixel funciton for rasterizing
+import { setPixel } from '../main'
 
 // Import the transformPoint function from matrix_math
 import { transformPoint } from '../matrix_math'
@@ -78,6 +82,28 @@ class Triangle extends Shape {
     // Make the WebGL ArayBuffer for this shape (using nanoGL)
     this.buffer = new NanoGL.ArrayBuffer(gl, this._positions)
     this.buffer.attrib('aPosition', 3, gl.FLOAT)
+  }
+
+  // TODO: Complete this function to rasterize a triangle.
+  // Override parent function to rasterize a triangle. You may
+  // not use WebGL functions or any other libraries to draw. All
+  // changes to the canvas must happen through the 'setPixel' func.
+  rasterize () {
+    // Important notes:
+    // - Transform and round the vertices first
+    // - Feel free to use floating point arithmetic (DDA is recommended)
+    // - Take care to handle the filled vs. non-filled cases
+    // - Don't forget to pass this.color to setPixel or rasterizeLine calls
+    // - Be sure to test your code with all the unusual cases:
+    //   > Degenerate triangles (all the same point, all in a line)
+    //   > Triangles where sides are perfectly horizontal or vertical
+    //     (and combinations of vertical and horizontal)
+
+    // NOTE: These lines of code draw the vertices of the triangle in red.  They are
+    //       handy for debugging but SHOULD BE REMOVED from the final code.
+    setPixel(this.P1, Color.RED)
+    setPixel(this.P2, Color.RED)
+    setPixel(this.P3, Color.RED)
   }
 }
 

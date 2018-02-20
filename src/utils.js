@@ -4,7 +4,7 @@
  * Note: Will attempt to enable Vertex Array Objects
  * and add WebGL2 entry points.
  *
- * @param {HTMLElement} canvas a canvas element.
+ * @param {HTMLCanvasElement} canvas a canvas element.
  * @param {Object} [optAttribs] optional webgl context creation attributes
  */
 export function getWebGLContext (canvas, optAttribs) {
@@ -147,7 +147,7 @@ const supportedExtensions = [
  *      // Either WEBGL_draw_buffers was enabled OR you're running in WebGL2
  *      ....
  *
- * @param {WebGLRenderingContext} gl A WebGLRenderingContext
+ * @param {WebGLRenderingContext | CanvasRenderingContext2D} gl
  */
 function addExtensionsToContext(gl) {
   for (var ii = 0; ii < supportedExtensions.length; ++ii) {
@@ -157,10 +157,10 @@ function addExtensionsToContext(gl) {
 
 /**
  * Creates a webgl context.
- * @param {HTMLElement} canvas The canvas tag to get
+ * @param {HTMLCanvasElement} canvas The canvas tag to get
  *     context from. If one is not passed in one will be
  *     created.
- * @return {WebGLRenderingContext} The created context.
+ * @return {WebGLRenderingContext | CanvasRenderingContext2D} The created context.
  */
 function create3DContext(canvas, opt_attribs) {
   var names = ["webgl", "experimental-webgl"];

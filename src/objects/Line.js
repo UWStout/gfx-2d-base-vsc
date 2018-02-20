@@ -1,6 +1,10 @@
 // Import the Shape and Point objects
 import Shape from './Shape'
 import Point from './Point'
+import Color from './Color'
+
+// Import the setPixel funciton for rasterizing
+import { setPixel } from '../main'
 
 // TODO: Import the transformPoint function from matrix_math
 //       This is needed inside the updateBuffers() function
@@ -45,10 +49,8 @@ class Line extends Shape {
    * @return {Point} The center of the line
    */
   computeCentroid () {
-    // TODO: Complete this function so it computes a reasonable value
-    //       for the center of the line, then return tha value.
-
-    // NOTE: This line is temporary, remove it once you are done.
+    // TODO: Copy over your code from project 1 for this function
+    //       and replace its contents entirely.
     return Point.ORIGIN
   }
 
@@ -59,26 +61,61 @@ class Line extends Shape {
    * @param {WebGLRenderingContext} gl The canvas element rendering context
    */
   updateBuffers (gl) {
-    // TODO: Transform the endpoints of the line by the matrix this.M
-    //       and store the result to new variables.  The endpoints are
-    //       stored as this.P1 and this.P2.
-
-    // TODO: Pack the transformed endpoints into a Float32Array and store
-    //       it in this._positions.
-    //
-    // Here are some tips:
-    //   - Float32Array is a special array object built into JavaScript
-    //   - You create a new one by saying 'new Float32Array()'
-    //   - Pass a normal JavaScript array with your values to the constructor
-    //   - The array should contain the raw components of the endpoints
-    //     in order as a single, one-dimensional array
-    //   - Be sure to also include a value for the Z-axis even though
-    //     we are in 2D, just to make WebGL happy.
+    // TODO: Copy over your code from project 1 for this function
+    //       and replace its contents entirely.
     this._positions = new Float32Array([])
 
     // Make the WebGL ArayBuffer for this shape (using nanoGL)
     this.buffer = new NanoGL.ArrayBuffer(gl, this._positions)
     this.buffer.attrib('aPosition', 3, gl.FLOAT)
+  }
+
+  // Override parent function to rasterize a line
+  rasterize () {
+    // TODO: Complete this function to do the following
+    // - Transform and round the endpoints
+    //   > You can round a point by calling 'P1.round()'
+    //   > This rounds both the x and y components in place
+    // - Call Line.bresenham (defined below) with the ROUNDED points
+
+    // NOTE: This line is temporary. It should be different in the
+    // final version of this function.
+    Line.bresenham(this.P1, this.P2, this.color)
+  }
+
+  // TODO: Complete this function as Bresenham's Line algorithm
+  // Rasterize a general line using Bresenham's algorithm. You may
+  // not use WebGL functions or any other libraries to draw. All
+  // changes to the canvas must happen through the 'setPixel' func.
+  static bresenham (P1, P2, color) {
+    // Important notes:
+    // - Do NOT transform or round P1 and P2 (this has already happened)
+    // - Handle perfectly horiz and vert lines as special cases
+    //   > Use Shape.rasterizeHLine or Shape.rasterizeVLine
+    //   > You will need to import these functions to use them
+    // - For all remaining lines use Bresenham's algorithm
+    // - You must use integer arithmetic EVERYWHERE
+    // - You can only use integer addition inside the loop
+    // - All types of lines (e.g. all slopes) must be handled
+
+    // TIPS!!
+    // - Don't operate on P1 and P2 directly, break out their components
+    //    > for example, turn P1 into the variables x1 and y1
+    // - Implement the version of Bresenham's for slopes between 0 and 1 first!
+    // - Do NOT compute m directly!  Just compare y2 - y1 with x2 - x1
+    //    > m will always be a floating point value so DON'T compute it
+    // - To generalize the algorithm to all lines, consider the following:
+    //   > Avoid computing dx and dy until just before you start the main loop
+    //   > Just use y2 - y1 and x2 - x1 directly until the loop starts
+    // - You can "fix" other slopes to work in the general case as follows:
+    //   > Check for slopes > 1 in abs first (swap x's with y's to fix)
+    //   > Check for x1 > x2 next (swap endpoints to fix)
+    //   > Lastly, check for a decending y value and make note
+
+    // NOTE: The following lines of code draw the endpoints in red and are handy
+    //       for debugging but REMOVE THEM FROM THE FINAL VERSION!
+    setPixel(P1, Color.RED)
+    setPixel(P2, Color.RED)
   }
 }
 

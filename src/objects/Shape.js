@@ -2,7 +2,9 @@
 import Color from './Color'
 import Point from './Point'
 
-// TODO: Import any other functions or classes you need here
+import { setPixel } from '../main'
+
+// TODO: Import any other functions or classes you may need here
 
 /** @class Object to represent a drawable 2D shape */
 class Shape {
@@ -26,13 +28,42 @@ class Shape {
     this.buffer = null
 
     // Default transformation properties
-    // TODO: Assign REASONABLE default values for the following properties
-    //       which are all be members of 'this'
-    // - tx, ty, sx, sy (numbers for translation and scale)
-    // - rotAngle (angle of rotation in degrees)
-    // - rotAroundCenter (boolean indicating to rotate around center of object)
-    // - M (the pre-computed transformation matrix)
-    // CAUTION! Don't call computeCentroid here, either directly or indirectly
+    // TODO: Copy over you additions to the constructor from project 1
+    // NOTE: Do NOT replace the entire file! It is different in some places.
+  }
+
+  /**
+   * NOTE: The next two functions are STATIC!
+   *    This means you do not need an instace of a shape to call them. Rather
+   * you call them using the class name like so: Shape.rasterizeHLine(...)
+   */
+
+  // TODO: Implement rasterizeHLine
+  // Rasterize a perfectly horizontal line. You may not use WebGL
+  // functions or any other libraries to draw. All changes to the
+  // canvas must happen through the 'setPixel' function.
+  static rasterizeHLine (x1, x2, y, color) {
+    // Important notes:
+    // - Do NOT transform or round the coordinates
+    // - x1 and x2 may NOT be in increasing order
+
+    // NOTE: Remove these two lines once your function is complete
+    setPixel(new Point(x1, y), color)
+    setPixel(new Point(x2, y), color)
+  }
+
+  // TODO: Implement rasterizeVLine
+  // Rasterize a perfectly vertical line. You may not use WebGL
+  // functions or any other libraries to draw. All changes to the
+  // canvas must happen through the 'setPixel' function.
+  static rasterizeVLine (x, y1, y2, color) {
+    // Important notes:
+    // - Do NOT transform or round the coordinates
+    // - y1 and y2 may NOT be in increasing order
+
+    // NOTE: Remove these two lines once your function is complete
+    setPixel(new Point(x, y1), color)
+    setPixel(new Point(x, y2), color)
   }
 
   // Function to get the ID of this shape as a number
@@ -72,6 +103,14 @@ class Shape {
    */
   updateBuffers (gl) {
     console.error('ERROR: Abstract Shape.updateBuffers() called.')
+  }
+
+  /**
+   * Rasterize this shape by drawing pixels (should be overriden)
+   * @abstract
+   */
+  rasterize () {
+    console.error('ERROR: Abstract Shape.rasterize() called.')
   }
 }
 
