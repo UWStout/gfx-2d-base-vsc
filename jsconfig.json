@@ -1,9 +1,9 @@
 {
-    "compilerOptions": {
-        "target": "es2016",
-        "checkJs": true
-    },
-    "include": [
-        "src/**/*"
-    ]
+  "compilerOptions": {
+    "target": "es2016",
+    "checkJs": true
+  },
+  "include": [
+    "src/**/*"
+  ]
 }
