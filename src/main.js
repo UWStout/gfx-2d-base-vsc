@@ -241,6 +241,7 @@ function redrawSceneRast () {
   rast.fillRect(0, 0, rast.canvas.width, rast.canvas.height)
 
   // Generate all pixels by re-rasterizing all shapes
+  pixels = new Queue()
   for (var i = 0; i < scene.length; i++) {
     scene[i].rasterize()
   }

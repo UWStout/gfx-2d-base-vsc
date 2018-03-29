@@ -119,6 +119,18 @@ function updateData () {
 }
 
 /**
+ * Convert a number to a string with padding on the front.
+ * @param {number} num The number to be converted
+ * @param {number} padlen The length to pad up to
+ * @param {string} padchar The character(s) to pad with (defaults to 0)
+ */
+function paddy (num, padlen, padchar) {
+  var padChar = typeof padchar !== 'undefined' ? padchar : '0'
+  var pad = new Array(1 + padlen).join(padChar)
+  return (pad + num).slice(-pad.length)
+}
+
+/**
  * Show the current mouse coordiantes in the web page
  * @param {JQueryMouseEventObject} e Mouse motion event
  */
@@ -131,8 +143,8 @@ function showCoordinates (e) {
   }
   let curMousePos = new Point(e.clientX - rect.left,
     rect.height - (e.clientY - rect.top))
-
-  $('#curMouse').text(`(${curMousePos.x}, ${curMousePos.y})`)
+  curMousePos.round()
+  $('#curMouse').text(`(${paddy(curMousePos.x, 3)}, ${paddy(curMousePos.y, 3)})`)
 }
 
 // Global array to store locations of previous clicks.  Needs to be
@@ -162,7 +174,11 @@ function onClickCanvas (e) {
     // Print to the javascript console for debugging/verificaiton
     console.info(`click at (${Interface.lastClickPos.x}, ${Interface.lastClickPos.y})`)
   }
-  $('#lastClick').text(`(${Interface.lastClickPos.x}, ${Interface.lastClickPos.y})`)
+
+  // Print out the mouse click coordinates
+  let printPoint = Interface.lastClickPos
+  printPoint.round()
+  $('#lastClick').text(`(${paddy(printPoint.x, 3)}, ${paddy(printPoint.y, 3)})`)
 
   // Add the point to the list
   clickList.push(Interface.lastClickPos)

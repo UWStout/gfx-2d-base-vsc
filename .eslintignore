@@ -1,2 +1,3 @@
-webpack.config.js
-webpack.production.config.js
+webpack.dev.config.js
+webpack.prod.config.js
+webpack.deploy.config.js
